@@ -1,0 +1,171 @@
+_______________________________________________________________________________________________
+
+#dlib 18.18
+_______________________________________________________________________________________________
+
+### Download dlib-18.18
+
+### put "dlib-18.18" file to "home/bruce/"
+
+$ cd dlib-18.18/dlib
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ sudo make install
+$ sudo ldconfig
+_______________________________________________________________________________________________
+
+#tbb
+_______________________________________________________________________________________________
+
+$ sudo apt-get install libtbb.dev
+$ sudo apt-get install libboost-dev libboost-thread-dev libboost-system-dev libboost-filesystem-dev
+_______________________________________________________________________________________________
+
+#opencv 2.4.13
+_______________________________________________________________________________________________
+
+wget http://downloads.sourceforge.net/project/opencvlibrary/opencv-unix/2.4.13/opencv-2.4.13.zip
+unzip opencv-2.4.13.zip
+cd opencv-2.4.13
+mkdir release
+cd release
+$ cmake cmake -G "Unix Makefiles" -DCMAKE_CXX_COMPILER=/usr/bin/g++ CMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_TBB=ON -DBUILD_NEW_PYTHON_SUPPORT=ON -DWITH_V4L=ON -DINSTALL_C_EXAMPLES=ON -DINSTALL_PYTHON_EXAMPLES=ON -DBUILD_EXAMPLES=ON -DWITH_OPENGL=ON -DBUILD_FAT_JAVA_LIB=ON -DINSTALL_TO_MANGLED_PATHS=ON -DINSTALL_CREATE_DISTRIB=ON -DINSTALL_TESTS=ON -DENABLE_FAST_MATH=ON -DWITH_IMAGEIO=ON -DBUILD_SHARED_LIBS=OFF -DWITH_GSTREAMER=ON ..
+$ make all -j4
+$ sudo make install
+_______________________________________________________________________________________________
+
+#eign3
+_______________________________________________________________________________________________
+
+$ sudo apt-get install libeigen3-dev
+$ cd /usr/include/eigen3
+$ sudo cp Eigen/ .. -R
+$ sudo cp unsupported/ .. -R
+_______________________________________________________________________________________________
+
+#cuda for 14.04
+_______________________________________________________________________________________________
+
+$ sudo dpkg -i cuda-repo-ubuntu1404-8-0-local-ga2_8.0.61-1_amd64.deb
+$ sudo apt-get update
+$ sudo apt-get install cuda
+$ sudo vi ~/.bashrc
+# export PATH="$PATH:/usr/local/cuda-8.0/bin" 
+# export LD_LIBRARY_PATH="/usr/local/cuda-8.0/lib64"
+$ source ~/.bashrc
+_______________________________________________________________________________________________
+
+#caffe
+_______________________________________________________________________________________________
+
+$ sudo apt-get install libprotobuf-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler
+$ sudo apt-get install --no-install-recommends libboost-all-dev 
+$ sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
+$ sudo apt-get install libatlas-base-dev
+$ git clone git://github.com/BVLC/caffe.git
+$ cd caffe/
+$ cp Makefile.config.example Makefile.config
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make all -j4
+$ make install
+
+
+#error Could NOT find LevelDB (missing: LevelDB_INCLUDE LevelDB_LIBRARY)
+$ sudo apt-get install libleveldb-dev
+
+#erorr opencv in cmake/Dependencies.cmake
+#add
+set( OpenCV_DIR /home/user/opencv-2.4.13.2/release )
+set(OpenCV_FOUND 1)
+
+#erorr /usr/bin/ld: cannot find -lopencv_dep_cudart
+$ sudo ln -s /usr/local/cuda-8.0/lib64/libcudart.so /usr/local/lib/
+$ sudo ln -s /usr/local/cuda-8.0/lib64/libcudart.a /usr/local/lib/
+
+#add in /caffe/CmakeLists.txt
+set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
+
+# build code issue
+# /home/bruce/caffe/include/caffe/layer_factory.hpp:48:34: fatal error: caffe/proto/caffe.pb.h: No such file or directory
+# cmakelists add
+# include_directories(/home/bruce/caffe/build/install/include/)
+# or
+# include_directories(/home/bruce/caffe/build/include/)
+_______________________________________________________________________________________________
+
+#flycapture for 14.04
+_______________________________________________________________________________________________
+
+/**FlyCapture2**/
+
+### http://www.ptgrey.com/support/downloads/10398
+### Check USB3 support : libgtkmm-2.4-dev libglademm-2.4-dev libusb-1.0
+$ sudo apt-get install libraw1394-11 libgtkmm-2.4-1c2a libglademm-2.4-1c2a libgtkglextmm-x11-1.2-dev libgtkglextmm-x11-1.2 libusb-1.0-0
+
+$ sudo apt-get -f install
+
+### install FlyCapture2
+### Download:
+###	BlackFly
+###	BFLY-U3-03S2M-CS Blackfly
+### 	FlyCapture 2.9.3.15 SDK - ARMHF (32-bit) — 03/29/2016 - 17.1206MB
+### http://www.ptgrey.com/KB/10357
+### Dont need
+### https://www.youtube.com/watch?v=ts4fk5j7mfk
+### https://www.ptgrey.com/tan/10685
+
+$ cd flycapture2-2.11.3.121-amd64
+$ sudo apt-get install libglademm-2.4-1v5:i386
+$ sudo apt-get install libgtkmm-2.4-1v5
+$ sudo apt-get install libraw1394-11 libgtkmm-2.4-1c2a libglademm-2.4-1c2a libgtkglextmm-x11-1.2-dev libgtkglextmm-x11-1.2 libusb-1.0-0
+$ sudo apt-get -f install
+$ sudo apt-get install libgtkmm-2.4-dev libgtkglextmm-x11-1.2-dev
+$ sudo apt-get -f install
+$ sudo sh install_flycapture.sh
+
+### 1. Open the /etc/default/grub file in any text editor. Find and replace:
+
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+
+with this:
+
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash usbcore.usbfs_memory_mb=1024"
+
+### 2. Update grub with these settings:
+
+$ sudo update-grub
+
+ or 
+ 
+$ sudo modprobe usbcore usbfs_memory_mb=1000
+
+
+### Restart and check is 1024
+
+$ cat /sys/module/usbcore/parameters/usbfs_memory_mb
+
+### Also it is recommended to upgrade your kernel to 3.16 by doing
+
+$ sudo apt-get install linux-signed-generic-lts-utopic
+
+###test FlyCapture2
+$ ./flycapture-name/bin/FlyCap2
+###add config button , change configuration
+###change FPS && image size ******[ resolution need small 1920x1080]********* 
+
+#############flycap2--test###################
+$ cd flycapture.2.9.3.43_armhf/bin
+$ ./FlyCap2
+
+
+
+
+
+
+_______________________________________________________________________________________________
+
+
